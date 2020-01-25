@@ -8,13 +8,13 @@ import "firebase/auth";
 
 // Your app's Firebase configuration
 var firebaseConfig = {
-  apiKey: "[YOUR_API_KEY]",
-  authDomain: "[YOUR_FIREBASE_AUTH_DOMAIN]",
-  databaseURL: "[YOUR_FIREBASE_DATABASE_URL]",
-  projectId: "[YOUR_FIREBASE_PROJECT_ID]",
-  storageBucket: "",
-  messagingSenderId: "[YOUR_FIREBASE_MESSAGING_SENDER_ID]",
-  appId: "[YOUR_FIREBASE_APP_ID]"
+  apiKey: "AIzaSyDbc1mKUkxSU6VbFkcc0JMG4ybRFLH9atg",
+  authDomain: "shinkansen-5ac87.firebaseapp.com",
+  databaseURL: "https://shinkansen-5ac87.firebaseio.com",
+  projectId: "shinkansen-5ac87",
+  storageBucket: "shinkansen-5ac87.appspot.com",
+  messagingSenderId: "698376700291",
+  appId: "1:698376700291:web:0be5e26b5e6196375236b6"
 };
 
 // Initialize Firebase
