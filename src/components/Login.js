@@ -1,9 +1,25 @@
 import React, { useState } from 'react'
+import VpnKeyIcon from '@material-ui/icons/VpnKey'
+import { FormGroup, makeStyles, Button } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { signup, signin, resetPassword } from '../store/actions/auth'
 import useForm from '../utils/useForm'
 import validate from '../utils/validateLoginForm'
 import Spinner from './Spinner'
+import {
+  Box,
+  Typography,
+  Card,
+  InputAdornment,
+  TextField,
+} from '@material-ui/core'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+
+const useStyles = makeStyles(theme => ({
+  form: {
+    paddingBottom: theme.spacing(4),
+  },
+}))
 
 const Login = ({
   signup,
@@ -13,6 +29,7 @@ const Login = ({
   history,
   loading,
 }) => {
+  const classes = useStyles()
   const [newUser, setNewUser] = useState(false)
   const [reset, SetReset] = useState(false)
   const [credentials, handleChange, handleSubmit, errors] = useForm(
@@ -37,94 +54,128 @@ const Login = ({
   }
 
   return (
-    <div className="login">
-      <h1>Hi there!</h1>
-      <h2>
-        {reset ? 'Reset password' : newUser ? 'Create an account' : 'Sign in'}
-      </h2>
-      {authMsg && <p className="auth-message">{authMsg}</p>}
-      <form onSubmit={handleSubmit} noValidate>
-        {/* Email */}
-        <div className="input-group">
-          <label htmlFor="email">E-mail</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={credentials.email}
-            placeholder="Your e-mail"
-            onChange={handleChange}
-            className={
-              (errors.emailIsEmpty || errors.emailFormatInvalid) &&
-              'input-error'
-            }
-          />
-          {errors.emailIsEmpty && <small>{errors.emailIsEmpty}</small>}
-          {errors.emailFormatInvalid && (
-            <small>{errors.emailFormatInvalid}</small>
-          )}
-        </div>
+    <Box
+      style={{ background: 'linear-gradient(to bottom,#654a86,#534292)' }}
+      height="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Card>
+        <Box p={6}>
+          <Box pb={4} width="380px">
+            <Typography color="secondary" variant="h6" align="center">
+              {reset
+                ? 'Reset password'
+                : newUser
+                ? 'Create an account'
+                : 'Sign in to your account'}
+            </Typography>
+          </Box>
+          {authMsg && <p className="auth-message">{authMsg}</p>}
+          <form onSubmit={handleSubmit} noValidate>
+            <Box pb={4}>
+              {/* Email */}
+              <FormGroup className={classes.form}>
+                <TextField
+                  error={errors.emailIsEmpty || errors.emailFormatInvalid}
+                  id="email"
+                  name="email"
+                  placeholder="Email address"
+                  helperText={
+                    (errors && errors.emailIsEmpty) ||
+                    (errors && errors.emailFormatInvalid)
+                  }
+                  defaultValue={credentials.email}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccountCircle color="secondary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormGroup>
 
-        {/* PASSWORD */}
-        {!reset && (
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={credentials.password}
-              placeholder="Your password"
-              onChange={handleChange}
-              className={
-                (errors.passIsStrong || errors.passIsEmpty) && 'input-error'
-              }
-            />
-            {errors.passIsStrong && <small>{errors.passIsStrong}</small>}
-            {errors.passIsEmpty && <small>{errors.passIsEmpty}</small>}
-          </div>
-        )}
+              {/* PASSWORD */}
+              {!reset && (
+                <FormGroup>
+                  <TextField
+                    error={errors.passIsStrong || errors.passIsEmpty}
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    onChange={handleChange}
+                    defaultValue={credentials.password}
+                    helperText={
+                      (errors && errors.passIsStrong) ||
+                      (errors && errors.passIsEmpty)
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <VpnKeyIcon color="secondary" />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormGroup>
+              )}
+            </Box>
 
-        {/* BUTTONS */}
-        <div>
-          <button type="submit" className="btn-login">
-            {loading ? (
-              <Spinner />
-            ) : reset ? (
-              'Reset password'
-            ) : newUser ? (
-              'Create account'
-            ) : (
-              'Sign in'
-            )}
-          </button>
-          {!newUser && !reset && (
-            <button onClick={() => SetReset(true)} className="btn-link">
-              Forgot password?
-            </button>
-          )}
-          {reset && (
-            <button onClick={() => SetReset(false)} className="btn-link">
-              Back to sign in
-            </button>
-          )}
-        </div>
-      </form>
-      <footer className="login-footer">
-        <p>
-          {newUser ? 'Already have an account?' : "Don't have an account yet?"}
-        </p>
-        <button
-          onClick={() => {
-            setNewUser(!newUser)
-            if (reset) SetReset(false)
-          }}
-          className="btn-switch"
+            {/* BUTTONS */}
+            <Box display="flex" justifyContent="space-between">
+              <Button variant="contained" color="secondary" type="submit">
+                {loading ? (
+                  <Spinner />
+                ) : reset ? (
+                  'Reset password'
+                ) : newUser ? (
+                  'Create account'
+                ) : (
+                  'Sign in'
+                )}
+              </Button>
+              {!newUser && !reset && (
+                <Button variant="text" onClick={() => SetReset(true)}>
+                  Forgot password?
+                </Button>
+              )}
+              {reset && (
+                <Button variant="contained" onClick={() => SetReset(false)}>
+                  Back to sign in
+                </Button>
+              )}
+            </Box>
+          </form>
+        </Box>
+        <Box
+          p={4}
+          display="flex"
+          bgcolor="primary.light"
+          alignItems="center"
+          borderTop={`1px solid #dddddd`}
+          justifyContent="space-between"
         >
-          {newUser ? 'Sign in' : 'Create an account'}
-        </button>
-      </footer>
-    </div>
+          <Typography component="span" color="secondary">
+            {newUser ? 'Already have an account?' : 'New to shinkansen?'}
+          </Typography>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => {
+              setNewUser(!newUser)
+              if (reset) SetReset(false)
+            }}
+          >
+            {newUser ? 'Sign in' : 'Create an account'}
+          </Button>
+        </Box>
+      </Card>
+    </Box>
   )
 }
 
