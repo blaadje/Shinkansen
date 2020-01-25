@@ -1,9 +1,8 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
 
-import Main from "./Main";
-import Login from "./Login";
-import Bunny from "./Bunny";
+import Main from './Main'
+import Login from './Login'
 
 const App = () => {
   return (
@@ -11,10 +10,9 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Main} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/bunny" component={Bunny} />
       </Switch>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,8 +1,8 @@
-import React from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { signout } from "../store/actions/auth";
-import requireAuth from "./hoc/requireAuth";
+import React from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { signout } from '../store/actions/auth'
+import requireAuth from './hoc/requireAuth'
 
 const Main = ({ signout }) => {
   return (
@@ -18,25 +18,22 @@ const Main = ({ signout }) => {
         Log out
       </button>
     </div>
-  );
-};
+  )
+}
 
 function mapStateToProps(state) {
   return {
-    auth: state.firebaseReducer.auth
-  };
+    auth: state.firebaseReducer.auth,
+  }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    signout: () => dispatch(signout())
-  };
+    signout: () => dispatch(signout()),
+  }
 }
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   requireAuth
-)(Main);
+)(Main)

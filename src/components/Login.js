@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { signup, signin, resetPassword } from "../store/actions/auth";
-import useForm from "../utils/useForm";
-import validate from "../utils/validateLoginForm";
-import Spinner from "./Spinner";
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { signup, signin, resetPassword } from '../store/actions/auth'
+import useForm from '../utils/useForm'
+import validate from '../utils/validateLoginForm'
+import Spinner from './Spinner'
 
 const Login = ({
   signup,
@@ -11,29 +11,27 @@ const Login = ({
   resetPassword,
   authMsg,
   history,
-  loading
+  loading,
 }) => {
-  const [newUser, setNewUser] = useState(false);
-  const [reset, SetReset] = useState(false);
+  const [newUser, setNewUser] = useState(false)
+  const [reset, SetReset] = useState(false)
   const [credentials, handleChange, handleSubmit, errors] = useForm(
     login,
     validate,
     reset
-  );
+  )
 
   function login() {
     if (newUser) {
       // signup
-      signup(credentials.email, credentials.password);
+      signup(credentials.email, credentials.password)
     } else {
       if (reset) {
         // reset password
-        resetPassword(credentials.email);
+        resetPassword(credentials.email)
       } else {
         // signin
-        signin(credentials.email, credentials.password, () =>
-          history.push("/")
-        );
+        signin(credentials.email, credentials.password, () => history.push('/'))
       }
     }
   }
@@ -42,7 +40,7 @@ const Login = ({
     <div className="login">
       <h1>Hi there!</h1>
       <h2>
-        {reset ? "Reset password" : newUser ? "Create an account" : "Sign in"}
+        {reset ? 'Reset password' : newUser ? 'Create an account' : 'Sign in'}
       </h2>
       {authMsg && <p className="auth-message">{authMsg}</p>}
       <form onSubmit={handleSubmit} noValidate>
@@ -58,7 +56,7 @@ const Login = ({
             onChange={handleChange}
             className={
               (errors.emailIsEmpty || errors.emailFormatInvalid) &&
-              "input-error"
+              'input-error'
             }
           />
           {errors.emailIsEmpty && <small>{errors.emailIsEmpty}</small>}
@@ -79,7 +77,7 @@ const Login = ({
               placeholder="Your password"
               onChange={handleChange}
               className={
-                (errors.passIsStrong || errors.passIsEmpty) && "input-error"
+                (errors.passIsStrong || errors.passIsEmpty) && 'input-error'
               }
             />
             {errors.passIsStrong && <small>{errors.passIsStrong}</small>}
@@ -93,11 +91,11 @@ const Login = ({
             {loading ? (
               <Spinner />
             ) : reset ? (
-              "Reset password"
+              'Reset password'
             ) : newUser ? (
-              "Create account"
+              'Create account'
             ) : (
-              "Sign in"
+              'Sign in'
             )}
           </button>
           {!newUser && !reset && (
@@ -114,27 +112,27 @@ const Login = ({
       </form>
       <footer className="login-footer">
         <p>
-          {newUser ? "Already have an account?" : "Don't have an account yet?"}
+          {newUser ? 'Already have an account?' : "Don't have an account yet?"}
         </p>
         <button
           onClick={() => {
-            setNewUser(!newUser);
-            if (reset) SetReset(false);
+            setNewUser(!newUser)
+            if (reset) SetReset(false)
           }}
           className="btn-switch"
         >
-          {newUser ? "Sign in" : "Create an account"}
+          {newUser ? 'Sign in' : 'Create an account'}
         </button>
       </footer>
     </div>
-  );
-};
+  )
+}
 
 function mapStateToProps(state) {
   return {
     authMsg: state.authReducer.authMsg,
-    loading: state.apiStatusReducer.apiCallsInProgress > 0
-  };
+    loading: state.apiStatusReducer.apiCallsInProgress > 0,
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -142,11 +140,8 @@ function mapDispatchToProps(dispatch) {
     signup: (email, password) => dispatch(signup(email, password)),
     signin: (email, password, callback) =>
       dispatch(signin(email, password, callback)),
-    resetPassword: email => dispatch(resetPassword(email))
-  };
+    resetPassword: email => dispatch(resetPassword(email)),
+  }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
