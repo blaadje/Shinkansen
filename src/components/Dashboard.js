@@ -1,4 +1,7 @@
 import React from 'react'
+import Popper from '@material-ui/core/Popper'
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
+import Octokit from '@octokit/rest'
 import { useFirebase, useFirebaseConnect } from 'react-redux-firebase'
 import requireAuth from './hoc/requireAuth'
 import {
@@ -11,12 +14,14 @@ import {
   Box,
   Button,
   InputBase,
+  Card,
 } from '@material-ui/core'
 
 import LensIcon from '@material-ui/icons/Lens'
 import SearchIcon from '@material-ui/icons/Search'
 import { compose } from 'redux'
 import { connect, useSelector } from 'react-redux'
+import GithubSearch from './GithubSearch'
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -39,14 +44,12 @@ const useStyles = makeStyles(theme => ({
     },
   },
   search: {
-    position: 'relative',
+    position: 'sticky',
     background: 'transparent',
+    top: 0,
     borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.primary.dark}`,
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '272px',
-    },
   },
   searchIcon: {
     width: theme.spacing(7),
@@ -63,23 +66,27 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Dashboard = ({ auth }) => {
+const Dashboard = ({ auth, history }) => {
   useFirebaseConnect([`applications/${auth.uid}`])
   const applications = useSelector(
     ({ firebaseReducer: { data } }) =>
       data.applications && data.applications[auth.uid]
   )
-  const applicationsArray = applications && Object.values(applications)
-  const classes = useStyles()
-  const handleListItemClick = () => {}
-  const firebase = useFirebase()
 
-  const addSampleTodo = async () => {
-    const response = await firebase.push(`applications/${auth.uid}`, {
-      name: 'foo2',
-      repository: 'bar',
-    })
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const applicationsArray = applications ? Object.values(applications) : []
+  const classes = useStyles()
+
+  const addSampleTodo = event => {
+    setAnchorEl(anchorEl ? null : event.currentTarget)
   }
+
+  const handleListItemClick = ({ id }) => {
+    history.push(`/application/${id}`)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popper' : undefined
 
   return (
     <>
@@ -90,54 +97,72 @@ const Dashboard = ({ auth }) => {
               variant="outlined"
               color="secondary"
               onClick={addSampleTodo}
+              endIcon={<UnfoldMoreIcon />}
             >
               New
             </Button>
+            <Popper
+              id={id}
+              open={open}
+              placement="bottom-end"
+              anchorEl={anchorEl}
+            >
+              <Card>
+                <GithubSearch connectedApps={applicationsArray} />
+              </Card>
+            </Popper>
           </Box>
         </Container>
       </Box>
-      <Container maxWidth="lg">
-        <Box pt={3} pb={3}>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-        </Box>
-      </Container>
-      <List
-        className={classes.root}
-        component="nav"
-        aria-label="main mailbox folders"
-      >
-        {applicationsArray &&
-          applicationsArray.map(({ name }) => {
-            return (
-              <ListItem
-                key={name}
-                divider
-                className={classes.listItem}
-                button
-                onClick={handleListItemClick}
-              >
-                <Container className={classes.container} maxWidth="lg">
-                  <ListItemIcon>
-                    <LensIcon color="secondary" />
-                  </ListItemIcon>
-                  <ListItemText primary={name} />
-                </Container>
-              </ListItem>
-            )
-          })}
-      </List>
+      {!applicationsArray.length ? (
+        <Container>
+          <p>There's no connected app</p>
+        </Container>
+      ) : (
+        <>
+          <Box pt={3} pb={3}>
+            <Container maxWidth="lg">
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
+                />
+              </div>
+            </Container>
+          </Box>
+          <List
+            className={classes.root}
+            component="nav"
+            aria-label="main mailbox folders"
+          >
+            {applicationsArray.map(application => {
+              return (
+                <ListItem
+                  key={application.name}
+                  divider
+                  className={classes.listItem}
+                  button
+                  onClick={() => handleListItemClick(application)}
+                >
+                  <Container className={classes.container} maxWidth="lg">
+                    <ListItemIcon>
+                      <LensIcon color="secondary" />
+                    </ListItemIcon>
+                    <ListItemText primary={application.name} />
+                  </Container>
+                </ListItem>
+              )
+            })}
+          </List>
+        </>
+      )}
     </>
   )
 }

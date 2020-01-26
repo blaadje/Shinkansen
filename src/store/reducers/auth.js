@@ -7,27 +7,34 @@ import {
   SIGNOUT_SUCCESS,
   SIGNOUT_ERROR,
   RESET_SUCCESS,
-  RESET_ERROR
-} from "../actions/actionTypes";
+  RESET_ERROR,
+} from '../actions/actionTypes'
 
 const INITIAL_STATE = {
-  authMsg: ""
-};
+  authMsg: '',
+}
 
 export default function(state = INITIAL_STATE, action) {
-  if (action.type === SIGNIN_SUCCESS || action.type === SIGNOUT_SUCCESS) {
-    return { ...state, authMsg: "" };
-  } else if (
-    action.type === SIGNUP_SUCCESS ||
-    action.type === SIGNUP_ERROR ||
-    action.type === SIGNIN_ERROR ||
-    action.type === EMAIL_NOT_VERIFIED ||
-    action.type === SIGNOUT_ERROR ||
-    action.type === RESET_SUCCESS ||
-    action.type === RESET_ERROR
-  ) {
-    return { ...state, authMsg: action.payload };
-  } else {
-    return state;
+  switch (action.type) {
+    case SIGNIN_SUCCESS:
+      return { ...state, authMsg: '' }
+    case SIGNOUT_SUCCESS:
+      return { ...state, authMsg: '' }
+    case SIGNUP_SUCCESS:
+      return { ...state, authMsg: action.payload }
+    case SIGNUP_ERROR:
+      return { ...state, authMsg: action.payload }
+    case SIGNIN_ERROR:
+      return { ...state, authMsg: action.payload }
+    case EMAIL_NOT_VERIFIED:
+      return { ...state, authMsg: action.payload }
+    case SIGNOUT_ERROR:
+      return { ...state, authMsg: action.payload }
+    case RESET_SUCCESS:
+      return { ...state, authMsg: action.payload }
+    case RESET_ERROR:
+      return { ...state, authMsg: action.payload }
+    default:
+      return state
   }
 }

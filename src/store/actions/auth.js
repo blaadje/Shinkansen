@@ -16,52 +16,40 @@ import firebase from '../../services/firebase'
 export const signup = (email, password) => async dispatch => {
   try {
     dispatch(beginApiCall())
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        firebase.auth().onAuthStateChanged(function(user) {
-          user.sendEmailVerification()
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+
+    await firebase.auth().onAuthStateChanged(user => {
+      user.sendEmailVerification()
+    })
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        firebase
+          .database()
+          .ref('users/' + user.uid)
+          .set({
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            emailVerified: user.emailVerified,
+            phoneNumber: user.phoneNumber,
+            isAnonymous: user.isAnonymous,
+            email: user.email,
+          })
+        // Sign up successful
+        dispatch({
+          type: SIGNUP_SUCCESS,
+          payload:
+            'Your account was successfully created! Now you need to verify your e-mail address, please go check your inbox.',
         })
-      })
-      .then(() => {
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (user) {
-            firebase
-              .database()
-              .ref('users/' + user.uid)
-              .set({
-                displayName: user.displayName,
-                photoURL: user.photoURL,
-                emailVerified: user.emailVerified,
-                phoneNumber: user.phoneNumber,
-                isAnonymous: user.isAnonymous,
-                email: email,
-              })
-            // Sign up successful
-            dispatch({
-              type: SIGNUP_SUCCESS,
-              payload:
-                'Your account was successfully created! Now you need to verify your e-mail address, please go check your inbox.',
-            })
-          } else {
-            // Signup failed
-            dispatch({
-              type: SIGNUP_ERROR,
-              payload:
-                "Something went wrong, we couldn't create your account. Please try again.",
-            })
-          }
-        })
-      })
-      .catch(() => {
-        dispatch(apiCallError())
+      } else {
+        // Signup failed
         dispatch({
           type: SIGNUP_ERROR,
           payload:
             "Something went wrong, we couldn't create your account. Please try again.",
         })
-      })
+      }
+    })
   } catch (err) {
     dispatch(apiCallError())
     dispatch({
@@ -121,19 +109,10 @@ export const signin = (email, password, callback) => async dispatch => {
 export const signout = () => async dispatch => {
   try {
     dispatch(beginApiCall())
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        dispatch({ type: SIGNOUT_SUCCESS })
-      })
-      .catch(() => {
-        dispatch(apiCallError())
-        dispatch({
-          type: SIGNOUT_ERROR,
-          payload: 'Error, we were not able to log you out. Please try again.',
-        })
-      })
+
+    await firebase.auth().signOut()
+
+    dispatch({ type: SIGNOUT_SUCCESS })
   } catch (err) {
     dispatch(apiCallError())
     dispatch({
@@ -147,24 +126,14 @@ export const signout = () => async dispatch => {
 export const resetPassword = email => async dispatch => {
   try {
     dispatch(beginApiCall())
-    firebase
-      .auth()
-      .sendPasswordResetEmail(email)
-      .then(() =>
-        dispatch({
-          type: RESET_SUCCESS,
-          payload:
-            "Check your inbox. We've sent you a secured reset link by e-mail.",
-        })
-      )
-      .catch(() => {
-        dispatch(apiCallError())
-        dispatch({
-          type: RESET_ERROR,
-          payload:
-            "Oops, something went wrong we couldn't send you the e-mail. Try again and if the error persists, contact admin.",
-        })
-      })
+
+    await firebase.auth().sendPasswordResetEmail(email)
+
+    dispatch({
+      type: RESET_SUCCESS,
+      payload:
+        "Check your inbox. We've sent you a secured reset link by e-mail.",
+    })
   } catch (err) {
     dispatch(apiCallError())
     dispatch({ type: RESET_ERROR, payload: err })

@@ -6,10 +6,9 @@ import firebase from 'firebase/app'
 // We only want to use Firebase Auth here
 import 'firebase/database'
 import 'firebase/auth'
-import 'firebase/firestore'
 
 // Your app's Firebase configuration
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
@@ -21,8 +20,6 @@ var firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
-
-firebase.firestore()
 
 // Finally, export it to use it throughout your app
 export default firebase

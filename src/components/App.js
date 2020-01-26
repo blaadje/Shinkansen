@@ -3,10 +3,16 @@ import { Switch, Route } from 'react-router-dom'
 
 import Login from './Login'
 import Menu from './Menu'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core'
+import {
+  createMuiTheme,
+  ThemeProvider,
+  CircularProgress,
+} from '@material-ui/core'
 import Loader from './Loader'
 import Dashboard from './Dashboard'
-import { connect } from 'react-redux'
+import ApplicationPage from './ApplicationPage'
+import { connect, useSelector } from 'react-redux'
+import { isLoaded, isEmpty } from 'react-redux-firebase'
 
 const theme = createMuiTheme({
   typography: {
@@ -30,26 +36,26 @@ const theme = createMuiTheme({
   },
 })
 
-const Main = auth => (
-  <>{!auth.isLoaded ? <Loader /> : !auth.isEmpty ? <Dashboard /> : <Login />}</>
-)
+const MainIsLoaded = (args, auth) => {
+  if (!isLoaded(auth)) {
+    return <CircularProgress color="secondary" />
+  }
 
-const App = ({ auth }) => {
+  return !isEmpty(auth) ? <Dashboard {...args} /> : <Login {...args} />
+}
+const App = () => {
+  const auth = useSelector(state => state.firebaseReducer.auth)
+
   return (
     <ThemeProvider theme={theme}>
-      {auth.isLoaded && !auth.isEmpty && <Menu />}
+      {isLoaded(auth) && !isEmpty(auth) && <Menu />}
       <Switch>
-        <Route exact path="/" component={() => Main(auth)} />
-        <Route exact path="/login" component={Login} />
+        <Route exact path="/" component={args => MainIsLoaded(args, auth)} />
+        <Route path="/login" component={Login} />
+        <Route path="/application/:id" component={ApplicationPage} />
       </Switch>
     </ThemeProvider>
   )
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.firebaseReducer.auth,
-  }
-}
-
-export default connect(mapStateToProps)(App)
+export default App

@@ -10,7 +10,7 @@ import firebase from './services/firebase'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 
 const rrfConfig = {
-  userProfile: null,
+  userProfile: 'users',
 }
 
 const rrfProps = {

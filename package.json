@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",
+    "@octokit/rest": "^16.38.3",
     "firebase": "^6.3.3",
     "prettier": "^1.19.1",
     "react": "^16.8.6",
@@ -14,7 +15,6 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "redux": "^4.0.4",
-    "redux-firestore": "^0.11.0",
     "redux-thunk": "^2.3.0",
     "typescript": "^3.5.3"
   },
