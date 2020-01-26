@@ -1,4 +1,5 @@
 import React from 'react'
+import { useFirebase, useFirebaseConnect } from 'react-redux-firebase'
 import requireAuth from './hoc/requireAuth'
 import {
   List,
@@ -14,6 +15,8 @@ import {
 
 import LensIcon from '@material-ui/icons/Lens'
 import SearchIcon from '@material-ui/icons/Search'
+import { compose } from 'redux'
+import { connect, useSelector } from 'react-redux'
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -60,23 +63,41 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Main = () => {
+const Dashboard = ({ auth }) => {
+  useFirebaseConnect([`applications/${auth.uid}`])
+  const applications = useSelector(
+    ({ firebaseReducer: { data } }) =>
+      data.applications && data.applications[auth.uid]
+  )
+  const applicationsArray = applications && Object.values(applications)
   const classes = useStyles()
-  const handleListItemClick = (event, index) => {}
+  const handleListItemClick = () => {}
+  const firebase = useFirebase()
+
+  const addSampleTodo = async () => {
+    const response = await firebase.push(`applications/${auth.uid}`, {
+      name: 'foo2',
+      repository: 'bar',
+    })
+  }
 
   return (
     <>
       <Box bgcolor="primary.light" p={2}>
         <Container maxWidth="lg">
           <Box display="flex" justifyContent="flex-end">
-            <Button variant="outlined" color="secondary">
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={addSampleTodo}
+            >
               New
             </Button>
           </Box>
         </Container>
       </Box>
       <Container maxWidth="lg">
-        <Box pt={3}>
+        <Box pt={3} pb={3}>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -97,35 +118,34 @@ const Main = () => {
         component="nav"
         aria-label="main mailbox folders"
       >
-        <ListItem
-          divider
-          className={classes.listItem}
-          button
-          onClick={event => handleListItemClick(event, 0)}
-        >
-          <Container className={classes.container} maxWidth="lg">
-            <ListItemIcon>
-              <LensIcon />
-            </ListItemIcon>
-            <ListItemText primary="Inbox" />
-          </Container>
-        </ListItem>
-        <ListItem
-          divider
-          className={classes.listItem}
-          button
-          onClick={event => handleListItemClick(event, 0)}
-        >
-          <Container className={classes.container} maxWidth="lg">
-            <ListItemIcon>
-              <LensIcon />
-            </ListItemIcon>
-            <ListItemText primary="Inbox" />
-          </Container>
-        </ListItem>
+        {applicationsArray &&
+          applicationsArray.map(({ name }) => {
+            return (
+              <ListItem
+                key={name}
+                divider
+                className={classes.listItem}
+                button
+                onClick={handleListItemClick}
+              >
+                <Container className={classes.container} maxWidth="lg">
+                  <ListItemIcon>
+                    <LensIcon color="secondary" />
+                  </ListItemIcon>
+                  <ListItemText primary={name} />
+                </Container>
+              </ListItem>
+            )
+          })}
       </List>
     </>
   )
 }
 
-export default requireAuth(Main)
+function mapStateToProps(state) {
+  return {
+    auth: state.firebaseReducer.auth,
+  }
+}
+
+export default compose(connect(mapStateToProps), requireAuth)(Dashboard)
