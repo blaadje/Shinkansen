@@ -5,7 +5,6 @@ import {
   FormGroup,
   makeStyles,
   Button,
-  IconButton,
   Divider,
   CircularProgress,
 } from '@material-ui/core'
@@ -13,7 +12,6 @@ import { connect } from 'react-redux'
 import { signup, signin, resetPassword, signout } from '../store/actions/auth'
 import useForm from '../utils/useForm'
 import validate from '../utils/validateLoginForm'
-import Spinner from './Spinner'
 import {
   Box,
   Typography,
@@ -79,12 +77,15 @@ const Login = ({
   }
 
   const handleGithubConnection = async () => {
-    const { additionalUserInfo } = await firebase.login({
+    const response = await firebase.login({
       provider: 'github',
       type: 'popup',
     })
 
-    return firebase.updateProfile({ additionalUserInfo })
+    return firebase.updateProfile({
+      ...response.additionalUserInfo,
+      accessToken: response.credential.accessToken,
+    })
   }
 
   return (
@@ -107,27 +108,13 @@ const Login = ({
             </Typography>
           </Box>
           <Button
+            onClick={handleGithubConnection}
             variant="contained"
-            style={{ background: '#3988f2', color: 'white' }}
-            startIcon={<span>G</span>}
+            color="secondary"
+            startIcon={<GitHubIcon />}
           >
-            Sign in with google
+            Sign in with GitHub
           </Button>
-          <Box
-            display="inline-block"
-            marginLeft={2}
-            borderRadius="50%"
-            bgcolor="primary.light"
-          >
-            <IconButton
-              color="secondary"
-              aria-label="upload picture"
-              component="span"
-              onClick={handleGithubConnection}
-            >
-              <GitHubIcon />
-            </IconButton>
-          </Box>
           <Box paddingY={5}>
             <Divider className={classes.divider} />
           </Box>

@@ -8,9 +8,17 @@ import {
   SIGNOUT_ERROR,
   RESET_SUCCESS,
   RESET_ERROR,
+  LOAD_OCTOKIT,
 } from './actionTypes'
 import { beginApiCall, apiCallError } from './apiStatus'
 import firebase from '../../services/firebase'
+
+export const loadOctokit = token => {
+  return {
+    type: LOAD_OCTOKIT,
+    payload: token,
+  }
+}
 
 // Signing up with Firebase
 export const signup = (email, password) => async dispatch => {

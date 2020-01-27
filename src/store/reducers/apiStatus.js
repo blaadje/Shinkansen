@@ -1,21 +1,31 @@
-import { BEGIN_API_CALL, API_CALL_ERROR } from "../actions/actionTypes";
+import {
+  BEGIN_API_CALL,
+  API_CALL_ERROR,
+  SIGNIN_SUCCESS,
+  SIGNUP_SUCCESS,
+  RESET_SUCCESS,
+  SIGNOUT_SUCCESS,
+} from '../actions/actionTypes'
 
 const INITIAL_STATE = {
-  apiCallsInProgress: 0
-};
-
-function actionTypeEndsInSuccess(type) {
-  return type.substring(type.length - 8) === "_SUCCESS";
+  apiCallsInProgress: 0,
 }
 
 export default function apiCallStatusReducer(state = INITIAL_STATE, action) {
-  if (action.type === BEGIN_API_CALL) {
-    return { ...state, apiCallsInProgress: 1 };
-  } else if (action.type === API_CALL_ERROR) {
-    return { ...state, apiCallsInProgress: 0 };
-  } else if (actionTypeEndsInSuccess(action.type)) {
-    return { ...state, apiCallsInProgress: 0 };
-  } else {
-    return state;
+  switch (action.type) {
+    case BEGIN_API_CALL:
+      return { ...state, apiCallsInProgress: 1 }
+    case API_CALL_ERROR:
+      return { ...state, apiCallsInProgress: 0 }
+    case SIGNIN_SUCCESS:
+      return { ...state, apiCallsInProgress: 0 }
+    case SIGNUP_SUCCESS:
+      return { ...state, apiCallsInProgress: 0 }
+    case RESET_SUCCESS:
+      return { ...state, apiCallsInProgress: 0 }
+    case SIGNOUT_SUCCESS:
+      return { ...state, apiCallsInProgress: 0 }
+    default:
+      return state
   }
 }

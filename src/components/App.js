@@ -8,11 +8,11 @@ import {
   ThemeProvider,
   CircularProgress,
 } from '@material-ui/core'
-import Loader from './Loader'
 import Dashboard from './Dashboard'
 import ApplicationPage from './ApplicationPage'
 import { connect, useSelector } from 'react-redux'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
+import { loadOctokit } from '../store/actions/auth'
 
 const theme = createMuiTheme({
   typography: {
@@ -43,7 +43,13 @@ const MainIsLoaded = (args, auth) => {
 
   return !isEmpty(auth) ? <Dashboard {...args} /> : <Login {...args} />
 }
-const App = () => {
+const App = ({ profile, loadOctokit }) => {
+  React.useEffect(() => {
+    if (!profile.accessToken) {
+      return
+    }
+    loadOctokit(profile.accessToken)
+  }, [profile, loadOctokit])
   const auth = useSelector(state => state.firebaseReducer.auth)
 
   return (
@@ -52,10 +58,22 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={args => MainIsLoaded(args, auth)} />
         <Route path="/login" component={Login} />
-        <Route path="/application/:id" component={ApplicationPage} />
+        <Route path="/application/:uid" component={ApplicationPage} />
       </Switch>
     </ThemeProvider>
   )
 }
 
-export default App
+function mapStateToProps(state) {
+  return {
+    profile: state.firebaseReducer.profile,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loadOctokit: token => dispatch(loadOctokit(token, dispatch)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

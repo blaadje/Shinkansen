@@ -1,8 +1,8 @@
 import React from 'react'
 import Popper from '@material-ui/core/Popper'
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
-import Octokit from '@octokit/rest'
-import { useFirebase, useFirebaseConnect } from 'react-redux-firebase'
+import { useFirebaseConnect } from 'react-redux-firebase'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import requireAuth from './hoc/requireAuth'
 import {
   List,
@@ -15,7 +15,9 @@ import {
   Button,
   InputBase,
   Card,
+  Breadcrumbs,
 } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 import LensIcon from '@material-ui/icons/Lens'
 import SearchIcon from '@material-ui/icons/Search'
@@ -31,6 +33,16 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: theme.palette.primary.light,
     },
+  },
+  icon: {
+    marginRight: theme.spacing(0.5),
+    width: 20,
+    height: 20,
+  },
+  link: {
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center',
   },
   inputRoot: {
     color: 'inherit',
@@ -74,15 +86,27 @@ const Dashboard = ({ auth, history }) => {
   )
 
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const applicationsArray = applications ? Object.values(applications) : []
+
+  const applicationsArray = applications
+    ? Object.entries(applications).reduce((acc, [index, application]) => {
+        return [
+          ...acc,
+          {
+            ...application,
+            uid: index,
+          },
+        ]
+      }, [])
+    : []
+
   const classes = useStyles()
 
   const addSampleTodo = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget)
   }
 
-  const handleListItemClick = ({ id }) => {
-    history.push(`/application/${id}`)
+  const handleListItemClick = ({ uid }) => {
+    history.push(`/application/${uid}`)
   }
 
   const open = Boolean(anchorEl)
@@ -92,25 +116,33 @@ const Dashboard = ({ auth, history }) => {
     <>
       <Box bgcolor="primary.light" p={2}>
         <Container maxWidth="lg">
-          <Box display="flex" justifyContent="flex-end">
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={addSampleTodo}
-              endIcon={<UnfoldMoreIcon />}
-            >
-              New
-            </Button>
-            <Popper
-              id={id}
-              open={open}
-              placement="bottom-end"
-              anchorEl={anchorEl}
-            >
-              <Card>
-                <GithubSearch connectedApps={applicationsArray} />
-              </Card>
-            </Popper>
+          <Box display="flex" alignItems="center">
+            <Breadcrumbs>
+              <Link to="/" className={classes.link}>
+                <AccountCircleIcon className={classes.icon} />
+                Personnal
+              </Link>
+            </Breadcrumbs>
+            <Box marginLeft="auto">
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={addSampleTodo}
+                endIcon={<UnfoldMoreIcon />}
+              >
+                New
+              </Button>
+              <Popper
+                id={id}
+                open={open}
+                placement="bottom-end"
+                anchorEl={anchorEl}
+              >
+                <Card>
+                  <GithubSearch connectedApps={applicationsArray} />
+                </Card>
+              </Popper>
+            </Box>
           </Box>
         </Container>
       </Box>
@@ -120,7 +152,7 @@ const Dashboard = ({ auth, history }) => {
         </Container>
       ) : (
         <>
-          <Box pt={3} pb={3}>
+          <Box pt={6} pb={3}>
             <Container maxWidth="lg">
               <div className={classes.search}>
                 <div className={classes.searchIcon}>

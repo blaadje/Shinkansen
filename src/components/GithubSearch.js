@@ -1,7 +1,6 @@
 import React from 'react'
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
 import BookOutlinedIcon from '@material-ui/icons/BookOutlined'
-import Octokit from '@octokit/rest'
 import { useFirebase } from 'react-redux-firebase'
 import {
   List,
@@ -42,25 +41,19 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const GithubSearch = ({ auth, username, connectedApps }) => {
+const GithubSearch = ({ auth, profile, username, connectedApps, octokit }) => {
   const [repos, setRepos] = React.useState([])
   const firebase = useFirebase()
   const classes = useStyles()
-  const octokit = new Octokit()
 
   React.useEffect(() => {
-    if (!username) {
-      return
-    }
-
     const getRepos = async () => {
-      const { data } = await octokit.repos.listForUser({
-        username,
-      })
+      const { data } = await octokit.repos.list({ sort: 'updated' })
+
       setRepos(data)
     }
     getRepos()
-  }, [username])
+  }, [])
 
   const handleListItemClick = repo => {
     firebase.push(`applications/${auth.uid}`, repo)
@@ -111,7 +104,9 @@ const GithubSearch = ({ auth, username, connectedApps }) => {
 function mapStateToProps(state) {
   return {
     auth: state.firebaseReducer.auth,
-    username: state.firebaseReducer?.profile?.additionalUserInfo?.username,
+    profile: state.firebaseReducer.profile,
+    username: state.firebaseReducer?.profile?.username,
+    octokit: state.octokitReducer.octokit,
   }
 }
 
