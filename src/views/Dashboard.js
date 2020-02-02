@@ -3,7 +3,7 @@ import Popper from '@material-ui/core/Popper'
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
 import { useFirebaseConnect } from 'react-redux-firebase'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import requireAuth from './hoc/requireAuth'
+import requireAuth from '../components/hoc/requireAuth'
 import {
   List,
   ListItem,
@@ -23,7 +23,7 @@ import LensIcon from '@material-ui/icons/Lens'
 import SearchIcon from '@material-ui/icons/Search'
 import { compose } from 'redux'
 import { connect, useSelector } from 'react-redux'
-import GithubSearch from './GithubSearch'
+import GithubSearch from '../components/GithubSearch'
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',

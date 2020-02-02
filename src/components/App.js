@@ -1,28 +1,29 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import Login from './Login'
+import Login from '../views/Login'
 import Menu from './Menu'
 import {
   createMuiTheme,
   ThemeProvider,
   CircularProgress,
 } from '@material-ui/core'
-import Dashboard from './Dashboard'
-import ApplicationPage from './ApplicationPage'
+import Dashboard from '../views/Dashboard'
+import AppDetails from '../views/AppDetails'
 import { connect, useSelector } from 'react-redux'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
 import { loadOctokit } from '../store/actions/auth'
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: 'Capriola',
-    fontWeightLight: 100,
-    fontWeightRegular: 100,
-    fontWeightMedium: 100,
-    fontWeightBold: 100,
+    fontFamily: 'Helvetica',
+    fontWeightLight: 300,
+    fontWeightRegular: 300,
+    fontWeightMedium: 300,
+    fontWeightBold: 300,
   },
   palette: {
+    text: { primary: '#62738d' },
     primary: {
       main: '#ffffff',
       light: '#f7f8fb',
@@ -58,7 +59,7 @@ const App = ({ profile, loadOctokit }) => {
       <Switch>
         <Route exact path="/" component={args => MainIsLoaded(args, auth)} />
         <Route path="/login" component={Login} />
-        <Route path="/application/:uid" component={ApplicationPage} />
+        <Route path="/application/:uid" component={AppDetails} />
       </Switch>
     </ThemeProvider>
   )

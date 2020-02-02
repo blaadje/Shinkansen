@@ -53,10 +53,20 @@ const GithubSearch = ({ auth, profile, username, connectedApps, octokit }) => {
       setRepos(data)
     }
     getRepos()
-  }, [])
+  }, [octokit.repos])
 
   const handleListItemClick = repo => {
     firebase.push(`applications/${auth.uid}`, repo)
+    octokit.repos.createHook({
+      owner: profile.username,
+      repo: repo.name,
+      events: ['deployment', 'deployment_status'],
+      config: {
+        url: `${process.env.REACT_APP_SERVER_DOMAIN}/`,
+        content_type: 'json',
+        secret: 'bonjour',
+      },
+    })
   }
 
   return (

@@ -80,6 +80,7 @@ const Login = ({
     const response = await firebase.login({
       provider: 'github',
       type: 'popup',
+      scopes: ['repo_deployment', 'admin:repo_hook'],
     })
 
     return firebase.updateProfile({

@@ -12,9 +12,6 @@ import { connect } from 'react-redux'
 import { signout } from '../store/actions/auth'
 
 const useStyles = makeStyles(theme => ({
-  grow: {
-    flexGrow: 1,
-  },
   menu: {
     boxShadow: 'none',
     borderBottom: `2px solid ${theme.palette.secondary.main}`,
@@ -67,36 +64,34 @@ const Menu = ({ signout }) => {
   )
 
   return (
-    <div className={classes.grow}>
-      <AppBar className={classes.menu} position="sticky">
-        <Toolbar>
+    <AppBar className={classes.menu} position="sticky">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="open drawer"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography className={classes.title} variant="h6" noWrap>
+          Shinkansen
+        </Typography>
+        <div className={classes.sectionDesktop}>
           <IconButton
-            edge="start"
-            className={classes.menuButton}
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
             color="inherit"
-            aria-label="open drawer"
           >
-            <MenuIcon />
+            <AccountCircle />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Shinkansen
-          </Typography>
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
+        </div>
+      </Toolbar>
       {renderMenu}
-    </div>
+    </AppBar>
   )
 }
 
