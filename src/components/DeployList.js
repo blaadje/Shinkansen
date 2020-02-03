@@ -26,11 +26,10 @@ const useStyles = makeStyles(theme => ({
   },
   login: {
     fontWeight: 500,
-    display: 'inline',
   },
   skeleton: {
-    display: 'inline-flex',
     width: '100px',
+    display: 'inline-flex !important',
   },
   loader: {
     height: '10px',
@@ -50,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 const DeployList = ({ status, deployments }) => {
   const classes = useStyles()
   return (
-    <List className={classes.root}>
+    <List>
       {deployments.map(deployment => {
         const orderedStatus = sortArrayWithDates(
           status[deployment.id],
@@ -113,11 +112,15 @@ const DeployList = ({ status, deployments }) => {
             <ListItemText
               primary={
                 <>
-                  <Typography className={classes.login}>
+                  <Typography component="span" className={classes.login}>
                     {deployment.creator.login}:{' '}
                   </Typography>
                   {!deployStatus.state && (
-                    <Skeleton className={classes.skeleton} animation="wave" />
+                    <Skeleton
+                      component="span"
+                      className={classes.skeleton}
+                      animation="wave"
+                    />
                   )}
                   {deployStatus.state && (
                     <Typography

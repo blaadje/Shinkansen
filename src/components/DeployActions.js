@@ -85,7 +85,7 @@ const DeployActions = ({
             variant="contained"
             color="primary"
             endIcon={<UndoIcon />}
-            disabled={isLoading}
+            disabled={isLoading || !previousVersion}
             onClick={handleRollback}
           >
             Rollback
