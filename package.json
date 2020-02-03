@@ -1,7 +1,6 @@
 {
-  "name": "firebase-auth-react-redux",
+  "name": "shinkansen",
   "version": "1.0.0",
-  "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",

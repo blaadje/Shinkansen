@@ -112,7 +112,7 @@ const ApplicationPage = ({ auth, profile, octokit, history }) => {
 
     deploys()
     tags()
-  }, [application, octokit, profile.username])
+  }, [application, octokit, profile, profile.username])
 
   React.useEffect(() => {
     const status = () => {
