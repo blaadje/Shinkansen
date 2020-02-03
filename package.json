@@ -19,6 +19,7 @@
     "socket.io-client": "^2.3.0",
     "typescript": "^3.5.3"
   },
+  "homepage": "https://blaadje.github.io/Shinkansen",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
