@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.js": "/Shinkansen/static/js/main.fb8db337.chunk.js",
+    "main.js.map": "/Shinkansen/static/js/main.fb8db337.chunk.js.map",
+    "runtime~main.js": "/Shinkansen/static/js/runtime~main.27f56b84.js",
+    "runtime~main.js.map": "/Shinkansen/static/js/runtime~main.27f56b84.js.map",
+    "static/js/2.2684e85e.chunk.js": "/Shinkansen/static/js/2.2684e85e.chunk.js",
+    "static/js/2.2684e85e.chunk.js.map": "/Shinkansen/static/js/2.2684e85e.chunk.js.map",
+    "index.html": "/Shinkansen/index.html",
+    "precache-manifest.abe684df8d277229cb907ac138c6fc36.js": "/Shinkansen/precache-manifest.abe684df8d277229cb907ac138c6fc36.js",
+    "service-worker.js": "/Shinkansen/service-worker.js"
+  }
+}
