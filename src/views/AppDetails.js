@@ -28,7 +28,7 @@ import {
   currentDeployStatus,
   isStatusLoading,
   sortArrayWithDates,
-} from '../utils'
+} from '../views/helpers'
 import { fetchDeploys, fetchTags, fetchStatus } from './helpers'
 
 const useStyles = makeStyles(theme => ({
@@ -75,8 +75,10 @@ const ApplicationPage = ({ auth, profile, octokit, history }) => {
 
   React.useEffect(() => {
     const socket = io.connect(process.env.REACT_APP_SERVER_DOMAIN)
-    socket.on('event', function({ body }) {
+
+    socket.on('event', ({ body }) => {
       const { deployment, deployment_status } = body
+
       if (deployment && !deployment_status) {
         setDeployments(prevDeploys => [...prevDeploys, body.deployment])
         return
@@ -151,9 +153,14 @@ const ApplicationPage = ({ auth, profile, octokit, history }) => {
     setTags(tags)
   }
 
-  const handleDelete = () => {
-    firebase.remove(`applications/${auth.uid}/${uid}`)
+  const handleDelete = async () => {
+    await firebase.remove(`applications/${auth.uid}/${uid}`)
     history.push('/')
+    octokit.repos.deleteHook({
+      owner: profile.username,
+      repo: application.name,
+      hook_id: application.hookId,
+    })
   }
 
   const orderedDeployments = sortArrayWithDates(deployments)

@@ -55,9 +55,8 @@ const GithubSearch = ({ auth, profile, username, connectedApps, octokit }) => {
     getRepos()
   }, [octokit.repos])
 
-  const handleListItemClick = repo => {
-    firebase.push(`applications/${auth.uid}`, repo)
-    octokit.repos.createHook({
+  const handleListItemClick = async repo => {
+    const { data } = await octokit.repos.createHook({
       owner: profile.username,
       repo: repo.name,
       events: ['deployment', 'deployment_status'],
@@ -67,6 +66,8 @@ const GithubSearch = ({ auth, profile, username, connectedApps, octokit }) => {
         secret: 'bonjour',
       },
     })
+
+    firebase.push(`applications/${auth.uid}`, { ...repo, hookId: data.id })
   }
 
   return (

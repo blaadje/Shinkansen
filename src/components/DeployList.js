@@ -13,8 +13,9 @@ import {
   ListItemAvatar,
   Avatar,
   makeStyles,
+  withStyles,
 } from '@material-ui/core'
-import { isStatusLoading, sortArrayWithDates } from '../utils'
+import { isStatusLoading, sortArrayWithDates } from '../views/helpers'
 
 const useStyles = makeStyles(theme => ({
   listItemIcon: {
@@ -46,8 +47,40 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+const ColorLinearProgress = withStyles({
+  colorPrimary: {
+    backgroundColor: '#fffacd',
+  },
+  barColorPrimary: {
+    backgroundColor: '#ffd700',
+  },
+})(LinearProgress)
+
 const DeployList = ({ status, deployments }) => {
   const classes = useStyles()
+
+  const getStatusColor = status => {
+    switch (status) {
+      case 'success':
+        return {
+          icon: <CheckCircleIcon htmlColor="green" />,
+          color: 'green',
+        }
+      case 'failure':
+        return { icon: <ErrorIcon color="error" />, color: 'red' }
+      case 'pending':
+        return {
+          icon: <ColorLinearProgress className={classes.loader} />,
+          color: 'gold',
+        }
+      default:
+        return {
+          icon: <ColorLinearProgress className={classes.loader} />,
+          color: 'green',
+        }
+    }
+  }
+
   return (
     <List>
       {deployments.map(deployment => {
@@ -68,38 +101,6 @@ const DeployList = ({ status, deployments }) => {
         const formattedDate = new Intl.DateTimeFormat('en-US', options).format(
           date
         )
-
-        const getStatusColor = status => {
-          switch (status) {
-            case 'success':
-              return {
-                icon: <CheckCircleIcon htmlColor="green" />,
-                color: 'green',
-              }
-            case 'failure':
-              return { icon: <ErrorIcon color="error" />, color: 'red' }
-            case 'pending':
-              return {
-                icon: (
-                  <LinearProgress
-                    className={classes.loader}
-                    color="secondary"
-                  />
-                ),
-                color: 'gold',
-              }
-            default:
-              return {
-                icon: (
-                  <LinearProgress
-                    className={classes.loader}
-                    color="secondary"
-                  />
-                ),
-                color: 'green',
-              }
-          }
-        }
 
         return (
           <ListItem key={deployment.id} divider alignItems="center">
