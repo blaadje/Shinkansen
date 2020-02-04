@@ -9,8 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    - name: GitHub Pages Deploy
-      uses: maxheld83/ghpages@v0.2.1
+    - uses: sterlingwes/gh-pages-deploy-action@v1.1
+      with:
+        access-token: ${{ secrets.ACCESS_TOKEN }}
+        source-directory: build
+        build-command: yarn build
