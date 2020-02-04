@@ -13,7 +13,7 @@ jobs:
       with:
         persist-credentials: false
         
-    - run: yarn build
+    - run: yarn & yarn build
 
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
