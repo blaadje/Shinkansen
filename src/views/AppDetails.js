@@ -74,9 +74,7 @@ const ApplicationPage = ({ auth, profile, octokit, history }) => {
   const previousVersion = tags[1] || null
 
   React.useEffect(() => {
-    const socket = io.connect(process.env.REACT_APP_SERVER_DOMAIN, {
-      secure: true,
-    })
+    const socket = io.connect(process.env.REACT_APP_SERVER_DOMAIN)
 
     socket.on('event', ({ body }) => {
       const { deployment, deployment_status } = body
