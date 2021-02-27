@@ -61,7 +61,7 @@ const GithubSearch = ({ auth, profile, username, connectedApps, octokit }) => {
       repo: repo.name,
       events: ['deployment', 'deployment_status'],
       config: {
-        url: `${process.env.REACT_APP_SERVER_DOMAIN}/node`,
+        url: `${process.env.REACT_APP_SERVER_DOMAIN}`,
         content_type: 'json',
         secret: 'bonjour',
       },
