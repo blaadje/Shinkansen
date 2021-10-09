@@ -58,7 +58,6 @@ const DeployActions = ({
           <Button
             variant="contained"
             color="secondary"
-            disabled={isLoading}
             endIcon={<TrainIcon />}
             onClick={handleDeploy}
           >
